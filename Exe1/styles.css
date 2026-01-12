@@ -1,0 +1,43 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    font-weight: bold;
+    
+    background-color: #f4f7f6; 
+    color: #ffffff;
+    
+
+    /* IMAGEM DE FUNDO*/
+    background-image: url('https://preview.redd.it/1920x1080-minimalist-wallpaper-source-v0-pcpbudoji51f1.jpeg?auto=webp&s=e7a5e2d921a76256347a8ecde248721ca8fb9f3c');
+    background-size: cover; 
+    background-attachment: fixed; 
+    background-position: center center; 
+    background-repeat: no-repeat;
+
+}
+
+div.header {
+    background-color: rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    
+    color: #ffffff;
+    padding: 20px 20px 10px 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.footer {
+    position: fixed
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 20px 0;
+    margin-top: 40px; 
+}
