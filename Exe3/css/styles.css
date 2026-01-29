@@ -1,0 +1,30 @@
+/* Estilos cabec1*/
+.cabec1 {
+    background-color: #7e7e7e; /* cor de fundo verde */
+    color: white;               /* cor do texto branca */
+    padding: 20px;              /* espaçamento interno */
+    font-size: 24px;            /* tamanho da fonte */
+    font-weight: bold;          /* negrito */
+    padding-left: 100px;         /* espaçamento à esquerda */;
+}
+
+
+
+
+/* Estilos para a barra de navegação */
+.meu-nav {
+    background-color: #c59700 !important; /* muda o fundo do nav */
+}
+
+.meu-nav .nav-link {
+    color: #ffffff !important;  /* cor dos links */
+    padding: 20px 15px;          /* aumenta o padding */
+    margin: 0 20px;
+    font-size: 15px;               /* espaçamento entre os links */
+
+}
+
+.meu-nav .nav-link:hover {
+    background-color: #6e6700;      /* hover personalizado */
+    border-radius: 5px;
+}
