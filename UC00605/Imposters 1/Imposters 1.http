@@ -20,3 +20,36 @@ Content-Type: application/json
 
 ### Ex0 - Teste GET (resposta default)
 GET http://localhost:3000/qualquercoisa
+
+### Ex1 - Adicionar STUB GET das Marcas de carro
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 200,
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": {
+            "marcas": ["Toyota", "Audi", "Ford", "Volvo", "Honda"]
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "GET",
+          "path": "/api/marcas"
+        }
+      }
+    ]
+  }
+}
+
+### Ex1 - Teste GET (resposta customizada)
+GET http://localhost:3000/api/marcas
