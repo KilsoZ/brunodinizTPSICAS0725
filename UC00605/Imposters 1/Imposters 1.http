@@ -1,0 +1,22 @@
+### Ex0 - Criar Imposter
+POST http://localhost:2525/imposters
+Content-Type: application/json
+
+{
+  "port": 3000,
+  "protocol": "http",
+  "name": "imposter-inicial"
+}
+
+### Ex0 - Validar porta reservada (deve dar erro)
+POST http://localhost:2525/imposters
+Content-Type: application/json
+
+{
+  "port": 3000,
+  "protocol": "http",
+  "name": "imposter-inicial"
+}
+
+### Ex0 - Teste GET (resposta default)
+GET http://localhost:3000/qualquercoisa
