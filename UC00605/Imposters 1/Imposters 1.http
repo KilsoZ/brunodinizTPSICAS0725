@@ -1,3 +1,7 @@
+### Por questão de consistencia, aqui um Delete para apagar imposters e fazer os exercicios seguidos
+DELETE http://localhost:2525/imposters
+
+
 ### Ex0 - Criar Imposter
 POST http://localhost:2525/imposters
 Content-Type: application/json
@@ -53,3 +57,80 @@ Content-Type: application/json
 
 ### Ex1 - Teste GET (resposta customizada)
 GET http://localhost:3000/api/marcas
+
+
+### Ex2 - Stub: pesquisa de carros por marca (GET /api/cars?brand=Toyota)
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 200,
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": {
+            "brand": "Toyota",
+            "results": [{
+              "id": 1,
+              "modelo": "Prius",
+              "preco": "19999€"
+            }
+            ]
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "GET",
+          "path": "/api/cars",
+          "query": { "brand": "Toyota" }
+        }
+      }
+    ]
+  }
+}
+
+### Ex2 - Teste GET /api/cars?brand=Toyota
+GET http://localhost:3000/api/cars?brand=Toyota
+
+### Ex2 - Teste negativo GET /api/cars sem query
+GET http://localhost:3000/api/cars
+
+### Ex3 - Stub: GET /api/cars sem parâmetros
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 200,
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": {
+            "results": []
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "GET",
+          "path": "/api/cars"
+        }
+      }
+    ]
+  }
+}
+
+### Ex3 - Teste GET /api/cars sem query
+GET http://localhost:3000/api/cars
