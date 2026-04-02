@@ -134,3 +134,58 @@ Content-Type: application/json
 
 ### Ex3 - Teste GET /api/cars sem query
 GET http://localhost:3000/api/cars
+
+### Ex4 - Stub: login bem-sucedido (POST /api/login com body exacto)
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 200,
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": {
+            "status": "ok",
+            "token": "validtoken"
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "POST",
+          "path": "/api/login",
+          "headers": {
+            "Content-Type": "application/json"
+          }
+        } 
+      },
+      {       
+          "deepEquals": {
+          "body": {"username":"admin","password":"secret"} 
+        }
+      }
+    ]
+  }
+}
+
+### Ex4 - Teste POST /api/login (credenciais válidas)
+POST http://localhost:3000/api/login
+Content-Type: application/json
+
+{"username":"admin","password":"secret"}
+
+### quando o ex 4 é enviado com deepEquals nao devolve nada, quando é enviado com equals devolve
+###{
+###  "status": "ok",
+###  "token": "validtoken"
+###}
+### entretanto ja percebi o meu erro, tava a fazer deepEquals tanto para os headers quanto para o body, ja funciona corretamente
+
+
+### Ex5 - Stub: login com credenciais inválidas (POST /api/login genérico)
