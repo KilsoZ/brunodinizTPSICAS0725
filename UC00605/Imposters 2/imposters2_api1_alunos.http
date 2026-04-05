@@ -1,0 +1,362 @@
+### Por questão de consistencia, aqui um Delete para apagar imposters e fazer os exercicios seguidos
+DELETE http://localhost:2525/imposters
+
+
+### 1. API Gestão de Alunos
+
+### Criaçao do Imposter
+POST http://localhost:2525/imposters
+Content-Type: application/json
+
+{
+  "port": 3000,
+  "protocol": "http",
+  "name": "imposter-alunos"
+}
+
+### Criaçao do primeiro Stub GET /api/alunos
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 200,
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": {
+            "alunos": [
+                { "id": 1, "nome": "Bruno Diniz", "idade": 22, "curso": "TPSI" },
+                { "id": 2, "nome": "Ana Costa", "idade": 19, "curso": "TMT" },
+                { "id": 3, "nome": "João Silva", "idade": 25, "curso": "TRJ" }
+            ]
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "GET",
+          "path": "/api/alunos"
+        }
+      }
+    ]
+  }
+}
+
+### Teste do Get Alunos
+GET http://localhost:3000/api/alunos
+
+### Stub 200 para GET /api/alunos/{id}
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 200,
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": {
+            "alunos": { "id": 1, "nome": "Bruno Diniz", "idade": 22, "curso": "TPSI" }
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "GET",
+          "path": "/api/alunos/1"
+        }
+      }
+    ]
+  }
+}
+
+### TESTE
+GET http://localhost:3000/api/alunos/1
+
+### Stub 404 para GET /api/alunos/{id}
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 404,
+          "body": {
+            "error": "not_found"
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "GET",
+          "path": "/api/alunos/99"
+        }
+      }
+    ]
+  }
+}
+
+### TESTE 
+GET http://localhost:3000/api/alunos/99
+
+
+### Stub 400 POST /api/alunos
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 400,
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": {
+            "error": "wrong_age",
+            "message": "Idade do aluno é menor do que 10 anos."
+          }
+        }
+      }
+    ],
+    "predicates": [
+        {
+            "matches": {
+            "body": "\"idade\":\\s*[0-9]\\b"
+            }
+        }
+    ]
+  }
+}
+
+### Stub 404 curso Inexistente POST /api/alunos
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{ 
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 404,
+          "body": {
+            "error": "not_found",
+            "message": "Curso não existente"
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "contains": {
+            "body": "\"curso\":\"Cristianismo\""
+        }
+      }
+    ]
+  }  
+}
+
+
+### Stub 201 POST /api/alunos
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 201,
+          "headers": {
+            "Content-Type": "application/json",
+            "Location": "/api/alunos/4"
+          },
+          "body": {
+            "id": "4",
+            "status": "created",
+            "message": "Aluno criado com sucesso"
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "POST",
+          "path": "/api/alunos",
+          "headers": {
+            "Content-Type": "application/json"
+          }
+        } 
+      }
+    ]
+  }
+}
+
+### Teste POST /api/alunos (idade inválida - 400)
+POST http://localhost:3000/api/alunos
+Content-Type: application/json
+
+{"nome":"Criança","idade":5,"curso":"TPSI"}
+
+### Teste POST /api/alunos (curso inexistente - 404)
+POST http://localhost:3000/api/alunos
+Content-Type: application/json
+
+{"nome":"Bruno","idade":22,"curso":"Cristianismo"}
+
+### Teste POST /api/alunos (sucesso - 201)
+POST http://localhost:3000/api/alunos
+Content-Type: application/json
+
+{"nome":"David Esteves","idade":32,"curso":"TPSI"}
+
+### Stub 200 PUT /api/alunos/{id}
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 200,
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": {
+            "alunos": { "id": 1, "nome": "Bruno Diniz", "idade": 22, "curso": "TPSI" }
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "PUT",
+          "path": "/api/alunos/1"
+        }
+      }
+    ]
+  }
+}
+
+### Stub 404 PUT /api/alunos/{id}
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 404,
+          "body": {
+            "error": "not_found"
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "PUT",
+          "path": "/api/alunos/99"
+        }
+      }
+    ]
+  }
+}
+
+### Teste PUT /api/alunos/1 (sucesso - 200)
+PUT http://localhost:3000/api/alunos/1
+Content-Type: application/json
+
+{"nome":"Bruno Diniz","idade":23,"curso":"TPSI"}
+
+### Teste PUT /api/alunos/99 (não existe - 404)
+PUT http://localhost:3000/api/alunos/99
+Content-Type: application/json
+
+{"nome":"Ninguém","idade":20,"curso":"TPSI"}
+
+
+### Stub 200 DELETE /api/alunos/{id}
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 200,
+          "headers": {
+            "Content-Type": "application/json"
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "DELETE",
+          "path": "/api/alunos/1",
+          "headers": {
+            "Authorization": "Bearer validtoken"
+          }
+        }        
+      }
+    ]
+  }
+}
+
+### Stub 403 DELETE /api/alunos/{id}
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 403,
+          "headers": {
+            "Content-Type": "application/json"
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "DELETE",
+          "path": "/api/alunos/1"
+        }        
+      }
+    ]
+  }
+}
+
+### Teste DELETE /api/alunos/1 (sucesso - 200)
+DELETE http://localhost:3000/api/alunos/1
+Authorization: Bearer validtoken
+
+### Teste DELETE /api/alunos/1 (sem permissão - 403)
+DELETE http://localhost:3000/api/alunos/1
