@@ -577,3 +577,76 @@ POST http://localhost:3000/api/auth
 Content-Type: application/json
 
 {"username":"hacker","password":"1234"}
+
+
+### Ex13 - Stub: recurso protegido / perfil (GET /api/profile com Authorization)
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 200,
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": {
+            "username": "Bruno",
+            "email": "bruno@gmail.com",
+            "age": 64
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "GET",
+          "path": "/api/profile",
+          "headers": {
+            "Authorization": "Bearer validtoken"
+          }
+        }        
+      }
+    ]
+  }
+}
+
+###
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{ 
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 403,
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": {
+            "error": "forbidden"
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "GET",
+          "path": "/api/profile"
+        } 
+      }
+    ]
+  }  
+}
+
+### Ex13 - Teste GET /api/profile (com token válido)
+GET http://localhost:3000/api/profile
+Authorization: Bearer validtoken
+
+### Ex13 - Teste GET /api/profile (sem token)
+GET http://localhost:3000/api/profile
