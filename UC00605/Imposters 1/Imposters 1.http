@@ -650,3 +650,65 @@ Authorization: Bearer validtoken
 
 ### Ex13 - Teste GET /api/profile (sem token)
 GET http://localhost:3000/api/profile
+
+### Ex14 -  Stub genérico para POST com Content-Type obrigatório
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{ 
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 415,
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": {
+            "message": "É obrigatorio o Content-Type ser application/json"
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "POST"
+        } 
+      }
+    ]
+  }  
+}
+
+### Ex14 - Teste POST sem Content-Type
+POST http://localhost:3000/api/login
+
+
+### ex15 - Stub genérico para GET (fallback 404)
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{ 
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 404,
+          "body": {
+            "error": "not_found"
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "GET"
+        } 
+      }
+    ]
+  }  
+}
+
+### Ex15 - Teste GET caminho não definido
+GET http://localhost:3000/api/naoexiste
