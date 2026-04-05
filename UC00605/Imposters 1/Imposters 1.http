@@ -408,3 +408,47 @@ POST http://localhost:3000/api/temperature
 Content-Type: application/json
 
 {"sensor_id": 1, "value": 36.5}
+
+### ex10 - Stub: tarefas duplicadas (POST /api/tasks com title "duplicate")
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 409,
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": {
+            "error": "duplicate_task"
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "POST",
+          "path": "/api/tasks",
+          "headers": {
+            "Content-Type": "application/json"
+          }
+        } 
+      },
+      {        
+        "contains": {
+         "body": "\"title\":\"duplicate\""
+        }        
+      }
+    ]
+  }
+}
+
+### Ex10 - Teste POST /api/tasks (titulo duplicado)
+POST http://localhost:3000/api/tasks
+Content-Type: application/json
+
+{"title":"duplicate"}
