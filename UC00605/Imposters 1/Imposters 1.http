@@ -189,3 +189,222 @@ Content-Type: application/json
 
 
 ### Ex5 - Stub: login com credenciais inválidas (POST /api/login genérico)
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 401,
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": {
+            "error": "invalid_credentials"
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "POST",
+          "path": "/api/login",
+          "headers": {
+            "Content-Type": "application/json"
+          }
+        } 
+      }
+    ]
+  }
+}
+
+### Ex5 - Teste POST /api/login (credenciais inválidas)
+POST http://localhost:3000/api/login
+Content-Type: application/json
+
+{"username":"hacker","password":"1234"}
+
+### Ex6 - Stub: criar utilizador (email duplicado) (POST /api/users com email específico)
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 409,
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": {
+            "error": "email_exists",
+            "message": "This email already exists"
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "POST",
+          "path": "/api/users",
+          "headers": {
+            "Content-Type": "application/json"
+          }
+        } 
+      },
+      {
+        "contains": {
+          "body": 
+          "\"email\":\"exists@example.com\""
+          
+        }
+      }
+    ]
+  }
+}
+
+### Ex6 - Teste POST /api/users (email duplicado)
+POST http://localhost:3000/api/users
+Content-Type: application/json
+
+{"email":"exists@example.com","nome":"Bruno"}
+
+
+### Ex7 - Stub: criar utilizador com sucesso (POST /api/users)
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 201,
+          "headers": {
+            "Content-Type": "application/json",
+            "Location": "/api/users/1"
+          },
+          "body": {
+            "id": "1",
+            "status": "created",
+            "message": "este utilizador foi criado com sucesso"
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "POST",
+          "path": "/api/users",
+          "headers": {
+            "Content-Type": "application/json"
+          }
+        } 
+      }
+    ]
+  }
+}
+
+### Ex7 - Teste POST /api/users (novo email)
+POST http://localhost:3000/api/users
+Content-Type: application/json
+
+{"nome":"Bruno","email":"novo@example.com","idade":25}
+
+### ex8 - Stub: temperatura — campo obrigatório (POST /api/temperature sem field)
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 400,
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": {
+            "error": "missing_field",
+            "message": "Value é obrigatório"
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "POST",
+          "path": "/api/temperature",
+          "headers": {
+            "Content-Type": "application/json"
+          }
+        } 
+      },
+      {
+        "not": {
+        "contains": {
+         "body": "\"value\""
+        }
+        }
+      }
+    ]
+  }
+}
+
+### Ex8 - Teste POST /api/temperature sem value
+POST http://localhost:3000/api/temperature
+Content-Type: application/json
+
+{"sensor_id": 1}
+
+### Ex9 - Stub: temperatura — criação com field presente (POST /api/temperature com value)
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 201,
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": {
+            "status": "Created",
+            "message": "Temperatura registada com sucesso"
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "POST",
+          "path": "/api/temperature",
+          "headers": {
+            "Content-Type": "application/json"
+          }
+        } 
+      },
+      {        
+        "contains": {
+         "body": "\"value\""
+        }        
+      }
+    ]
+  }
+}
+
+### Ex9 - Teste POST /api/temperature com value
+POST http://localhost:3000/api/temperature
+Content-Type: application/json
+
+{"sensor_id": 1, "value": 36.5}
