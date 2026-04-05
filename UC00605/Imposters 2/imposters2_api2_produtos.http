@@ -1,0 +1,335 @@
+### Por questão de consistencia, aqui um Delete para apagar imposters e fazer os exercicios seguidos
+DELETE http://localhost:2525/imposters
+
+### 2. API Gestão de Inventário de Produtos
+
+### Criaçao do Imposter
+POST http://localhost:2525/imposters
+Content-Type: application/json
+
+{
+  "port": 3000,
+  "protocol": "http",
+  "name": "imposter-produtos"
+}
+
+### Criaçao do primeiro stub GET /api/produtos
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 200,
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": {
+            "produtos": [
+                { "id": 1, "nome": "Teclado", "preco": 29.99, "quantidade": 50 },
+                { "id": 2, "nome": "Rato", "preco": 15.99, "quantidade": 30 },
+                { "id": 3, "nome": "Monitor", "preco": 199.99, "quantidade": 10 }
+            ]
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "GET",
+          "path": "/api/produtos"
+        }
+      }
+    ]
+  }
+}
+
+### Teste do Get Produtos
+GET http://localhost:3000/api/produtos
+
+### Stub 200 para GET /api/produtos/{id}
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 200,
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": {
+            "produtos": { "id": 1, "nome": "Teclado", "preco": 29.99, "quantidade": 50 }
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "GET",
+          "path": "/api/produtos/1"
+        }
+      }
+    ]
+  }
+}
+
+### Stub 404 para GET /api/produtos/{id}
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 404,
+          "body": {
+            "error": "not_found"
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "GET",
+          "path": "/api/produtos/99"
+        }
+      }
+    ]
+  }
+}
+
+### TESTE 200
+GET http://localhost:3000/api/produtos/1
+
+### TESTE 404
+GET http://localhost:3000/api/produtos/99
+
+### Stub 400 POST /api/produtos
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 400,
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": {
+            "error": "wrong_quantity",
+            "message": "Quantidade inválida de produto"
+          }
+        }
+      }
+    ],
+    "predicates": [
+        {
+            "matches": {
+            "body": "\"quantidade\":\\s*-[0-9]+"
+          }
+        }
+    ]
+  }
+}
+
+### Stub 201 POST /api/produtos
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 201,
+          "headers": {
+            "Content-Type": "application/json",
+            "Location": "/api/produtos/4"
+          },
+          "body": {
+            "id": "4",
+            "status": "created",
+            "message": "Produto criado com sucesso"
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "POST",
+          "path": "/api/produtos",
+          "headers": {
+            "Content-Type": "application/json"
+          }
+        } 
+      }
+    ]
+  }
+}
+
+### Teste POST /api/produtos (quantidade inválida - 400)
+POST http://localhost:3000/api/produtos
+Content-Type: application/json
+
+{"quantidade": -1}
+
+### Teste POST /api/produtos (produto criado - 201)
+POST http://localhost:3000/api/produtos
+Content-Type: application/json
+
+{"nome":"Headphones","preco":49.99,"quantidade":25}
+
+
+### Stub 200 PUT /api/produtos/{id}
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 200,
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": {
+            "produtos": { "id": 1, "nome": "Teclado", "preco": 29.99, "quantidade": 50 }
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "PUT",
+          "path": "/api/produtos/1/stock"
+        }
+      }
+    ]
+  }
+}
+
+### Stub 404 PUT /api/produtos/{id}
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 404,
+          "body": {
+            "error": "not_found"
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "PUT",
+          "path": "/api/produtos/99/stock"
+        }
+      }
+    ]
+  }
+}
+
+### Teste PUT /api/produtos/1 (sucesso - 200)
+PUT http://localhost:3000/api/produtos/1/stock
+Content-Type: application/json
+
+{ "id": 1, "nome": "Teclado", "preco": 39.99, "quantidade": 50 }
+
+### Teste PUT /api/produtos/99 (não existe - 404)
+PUT http://localhost:3000/api/produtos/99/stock
+Content-Type: application/json
+
+{ "id": 1, "nome": "Máquina de podar", "preco": 29.99, "quantidade": 50 }
+
+### Stub 200 DELETE /api/produtos/{id}
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 200,
+          "headers": {
+            "Content-Type": "application/json"
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "DELETE",
+          "path": "/api/produtos/1"
+        }
+      },
+      {
+        "matches": {
+            "body": "\"quantidade\":\\s*[0]\\b"
+            }       
+      }
+    ]
+  }
+}
+
+### Stub 400 DELETE /api/produtos/{id}
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 400,
+          "headers": {
+            "Content-Type": "application/json"
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "DELETE",
+          "path": "/api/produtos/1"
+        }
+      }
+    ]
+  }
+}
+
+### Teste DELETE /api/produtos/1 (stock zero - 200)
+DELETE http://localhost:3000/api/produtos/1
+Content-Type: application/json
+
+{"quantidade": 0}
+
+### Teste DELETE /api/produtos/1 (stock existente - 400)
+DELETE http://localhost:3000/api/produtos/1
+Content-Type: application/json
+
+{"quantidade": 10}
+
+### muito mais facil depois de ter a primeira API construida, é só quase copy/paste
