@@ -452,3 +452,128 @@ POST http://localhost:3000/api/tasks
 Content-Type: application/json
 
 {"title":"duplicate"}
+
+### Ex11 - Stub: criação de tarefa com sucesso (POST /api/tasks)
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 201,
+          "headers": {
+            "Content-Type": "application/json",
+            "Location": "/api/tasks/1"
+          },
+          "body": {
+            "id": 1,
+            "status": "created"
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "POST",
+          "path": "/api/tasks",
+          "headers": {
+            "Content-Type": "application/json"
+          }
+        } 
+      }
+    ]
+  }
+}
+
+### Ex11 - Teste POST /api/tasks (nova tarefa)
+POST http://localhost:3000/api/tasks
+Content-Type: application/json
+
+{"title":"Nova tarefa"}
+
+### Ex12 - Stub: autenticação (POST /api/auth)
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 200,
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": {
+            "token": "validtoken",
+            "expires_in": 200
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "POST",
+          "path": "/api/auth",
+          "headers": {
+            "Content-Type": "application/json"
+          }
+        }        
+      },
+      {
+      "deepEquals":   {
+          "body": {"username":"user1","password":"pass1"} 
+        }
+      }  
+    ]
+  }
+}
+
+###
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{ 
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 401,
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": {
+            "error": "wrong_credentials"
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "POST",
+          "path": "/api/auth",
+          "headers": {
+            "Content-Type": "application/json"
+          }
+        } 
+      }
+    ]
+  }  
+}
+
+### Ex12 - Teste POST /api/auth (credenciais válidas)
+POST http://localhost:3000/api/auth
+Content-Type: application/json
+
+{"username":"user1","password":"pass1"}
+
+### Ex12 - Teste POST /api/auth (credenciais inválidas)
+POST http://localhost:3000/api/auth
+Content-Type: application/json
+
+{"username":"hacker","password":"1234"}
