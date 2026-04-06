@@ -31,6 +31,14 @@ Content-Type: application/json
 
 {
   "stub": {
+    "predicates": [
+      {
+        "equals": {
+          "method": "GET",
+          "path": "/api/marcas"
+        }
+      }
+    ],
     "responses": [
       {
         "is": {
@@ -43,15 +51,7 @@ Content-Type: application/json
           }
         }
       }
-    ],
-    "predicates": [
-      {
-        "equals": {
-          "method": "GET",
-          "path": "/api/marcas"
-        }
-      }
-    ]
+    ]    
   }
 }
 
@@ -65,6 +65,15 @@ Content-Type: application/json
 
 {
   "stub": {
+    "predicates": [
+      {
+        "equals": {
+          "method": "GET",
+          "path": "/api/cars",
+          "query": { "brand": "Toyota" }
+        }
+      }
+    ],
     "responses": [
       {
         "is": {
@@ -83,16 +92,7 @@ Content-Type: application/json
           }
         }
       }
-    ],
-    "predicates": [
-      {
-        "equals": {
-          "method": "GET",
-          "path": "/api/cars",
-          "query": { "brand": "Toyota" }
-        }
-      }
-    ]
+    ]    
   }
 }
 
@@ -108,6 +108,14 @@ Content-Type: application/json
 
 {
   "stub": {
+    "predicates": [
+      {
+        "equals": {
+          "method": "GET",
+          "path": "/api/cars"
+        }
+      }
+    ],
     "responses": [
       {
         "is": {
@@ -120,15 +128,7 @@ Content-Type: application/json
           }
         }
       }
-    ],
-    "predicates": [
-      {
-        "equals": {
-          "method": "GET",
-          "path": "/api/cars"
-        }
-      }
-    ]
+    ]    
   }
 }
 
@@ -141,20 +141,6 @@ Content-Type: application/json
 
 {
   "stub": {
-    "responses": [
-      {
-        "is": {
-          "statusCode": 200,
-          "headers": {
-            "Content-Type": "application/json"
-          },
-          "body": {
-            "status": "ok",
-            "token": "validtoken"
-          }
-        }
-      }
-    ],
     "predicates": [
       {
         "equals": {
@@ -170,7 +156,21 @@ Content-Type: application/json
           "body": {"username":"admin","password":"secret"} 
         }
       }
-    ]
+    ],
+    "responses": [
+      {
+        "is": {
+          "statusCode": 200,
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": {
+            "status": "ok",
+            "token": "validtoken"
+          }
+        }
+      }
+    ]    
   }
 }
 
@@ -194,6 +194,17 @@ Content-Type: application/json
 
 {
   "stub": {
+    "predicates": [
+      {
+        "equals": {
+          "method": "POST",
+          "path": "/api/login",
+          "headers": {
+            "Content-Type": "application/json"
+          }
+        } 
+      }
+    ],
     "responses": [
       {
         "is": {
@@ -206,18 +217,7 @@ Content-Type: application/json
           }
         }
       }
-    ],
-    "predicates": [
-      {
-        "equals": {
-          "method": "POST",
-          "path": "/api/login",
-          "headers": {
-            "Content-Type": "application/json"
-          }
-        } 
-      }
-    ]
+    ]    
   }
 }
 
@@ -233,20 +233,6 @@ Content-Type: application/json
 
 {
   "stub": {
-    "responses": [
-      {
-        "is": {
-          "statusCode": 409,
-          "headers": {
-            "Content-Type": "application/json"
-          },
-          "body": {
-            "error": "email_exists",
-            "message": "This email already exists"
-          }
-        }
-      }
-    ],
     "predicates": [
       {
         "equals": {
@@ -264,7 +250,21 @@ Content-Type: application/json
           
         }
       }
-    ]
+    ],
+    "responses": [
+      {
+        "is": {
+          "statusCode": 409,
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": {
+            "error": "email_exists",
+            "message": "This email already exists"
+          }
+        }
+      }
+    ]    
   }
 }
 
@@ -281,6 +281,17 @@ Content-Type: application/json
 
 {
   "stub": {
+    "predicates": [
+      {
+        "equals": {
+          "method": "POST",
+          "path": "/api/users",
+          "headers": {
+            "Content-Type": "application/json"
+          }
+        } 
+      }
+    ],
     "responses": [
       {
         "is": {
@@ -296,18 +307,7 @@ Content-Type: application/json
           }
         }
       }
-    ],
-    "predicates": [
-      {
-        "equals": {
-          "method": "POST",
-          "path": "/api/users",
-          "headers": {
-            "Content-Type": "application/json"
-          }
-        } 
-      }
-    ]
+    ]    
   }
 }
 
@@ -323,20 +323,6 @@ Content-Type: application/json
 
 {
   "stub": {
-    "responses": [
-      {
-        "is": {
-          "statusCode": 400,
-          "headers": {
-            "Content-Type": "application/json"
-          },
-          "body": {
-            "error": "missing_field",
-            "message": "Value é obrigatório"
-          }
-        }
-      }
-    ],
     "predicates": [
       {
         "equals": {
@@ -354,7 +340,21 @@ Content-Type: application/json
         }
         }
       }
-    ]
+    ],
+    "responses": [
+      {
+        "is": {
+          "statusCode": 400,
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": {
+            "error": "missing_field",
+            "message": "Value é obrigatório"
+          }
+        }
+      }
+    ]    
   }
 }
 
@@ -370,20 +370,6 @@ Content-Type: application/json
 
 {
   "stub": {
-    "responses": [
-      {
-        "is": {
-          "statusCode": 201,
-          "headers": {
-            "Content-Type": "application/json"
-          },
-          "body": {
-            "status": "Created",
-            "message": "Temperatura registada com sucesso"
-          }
-        }
-      }
-    ],
     "predicates": [
       {
         "equals": {
@@ -399,7 +385,21 @@ Content-Type: application/json
          "body": "\"value\""
         }        
       }
-    ]
+    ],
+    "responses": [
+      {
+        "is": {
+          "statusCode": 201,
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": {
+            "status": "Created",
+            "message": "Temperatura registada com sucesso"
+          }
+        }
+      }
+    ]    
   }
 }
 
@@ -415,19 +415,6 @@ Content-Type: application/json
 
 {
   "stub": {
-    "responses": [
-      {
-        "is": {
-          "statusCode": 409,
-          "headers": {
-            "Content-Type": "application/json"
-          },
-          "body": {
-            "error": "duplicate_task"
-          }
-        }
-      }
-    ],
     "predicates": [
       {
         "equals": {
@@ -443,7 +430,20 @@ Content-Type: application/json
          "body": "\"title\":\"duplicate\""
         }        
       }
-    ]
+    ],
+    "responses": [
+      {
+        "is": {
+          "statusCode": 409,
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": {
+            "error": "duplicate_task"
+          }
+        }
+      }
+    ]    
   }
 }
 
@@ -459,6 +459,17 @@ Content-Type: application/json
 
 {
   "stub": {
+    "predicates": [
+      {
+        "equals": {
+          "method": "POST",
+          "path": "/api/tasks",
+          "headers": {
+            "Content-Type": "application/json"
+          }
+        } 
+      }
+    ],
     "responses": [
       {
         "is": {
@@ -473,18 +484,7 @@ Content-Type: application/json
           }
         }
       }
-    ],
-    "predicates": [
-      {
-        "equals": {
-          "method": "POST",
-          "path": "/api/tasks",
-          "headers": {
-            "Content-Type": "application/json"
-          }
-        } 
-      }
-    ]
+    ]    
   }
 }
 
@@ -500,20 +500,6 @@ Content-Type: application/json
 
 {
   "stub": {
-    "responses": [
-      {
-        "is": {
-          "statusCode": 200,
-          "headers": {
-            "Content-Type": "application/json"
-          },
-          "body": {
-            "token": "validtoken",
-            "expires_in": 200
-          }
-        }
-      }
-    ],
     "predicates": [
       {
         "equals": {
@@ -529,7 +515,21 @@ Content-Type: application/json
           "body": {"username":"user1","password":"pass1"} 
         }
       }  
-    ]
+    ],
+    "responses": [
+      {
+        "is": {
+          "statusCode": 200,
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": {
+            "token": "validtoken",
+            "expires_in": 200
+          }
+        }
+      }
+    ]    
   }
 }
 
@@ -539,6 +539,17 @@ Content-Type: application/json
 
 { 
   "stub": {
+    "predicates": [
+      {
+        "equals": {
+          "method": "POST",
+          "path": "/api/auth",
+          "headers": {
+            "Content-Type": "application/json"
+          }
+        } 
+      }
+    ],
     "responses": [
       {
         "is": {
@@ -551,18 +562,7 @@ Content-Type: application/json
           }
         }
       }
-    ],
-    "predicates": [
-      {
-        "equals": {
-          "method": "POST",
-          "path": "/api/auth",
-          "headers": {
-            "Content-Type": "application/json"
-          }
-        } 
-      }
-    ]
+    ]    
   }  
 }
 
@@ -585,6 +585,17 @@ Content-Type: application/json
 
 {
   "stub": {
+    "predicates": [
+      {
+        "equals": {
+          "method": "GET",
+          "path": "/api/profile",
+          "headers": {
+            "Authorization": "Bearer validtoken"
+          }
+        }        
+      }
+    ],
     "responses": [
       {
         "is": {
@@ -599,18 +610,7 @@ Content-Type: application/json
           }
         }
       }
-    ],
-    "predicates": [
-      {
-        "equals": {
-          "method": "GET",
-          "path": "/api/profile",
-          "headers": {
-            "Authorization": "Bearer validtoken"
-          }
-        }        
-      }
-    ]
+    ]    
   }
 }
 
@@ -620,6 +620,14 @@ Content-Type: application/json
 
 { 
   "stub": {
+    "predicates": [
+      {
+        "equals": {
+          "method": "GET",
+          "path": "/api/profile"
+        } 
+      }
+    ],
     "responses": [
       {
         "is": {
@@ -632,15 +640,7 @@ Content-Type: application/json
           }
         }
       }
-    ],
-    "predicates": [
-      {
-        "equals": {
-          "method": "GET",
-          "path": "/api/profile"
-        } 
-      }
-    ]
+    ]    
   }  
 }
 
@@ -657,6 +657,13 @@ Content-Type: application/json
 
 { 
   "stub": {
+    "predicates": [
+      {
+        "equals": {
+          "method": "POST"
+        } 
+      }
+    ],
     "responses": [
       {
         "is": {
@@ -669,14 +676,7 @@ Content-Type: application/json
           }
         }
       }
-    ],
-    "predicates": [
-      {
-        "equals": {
-          "method": "POST"
-        } 
-      }
-    ]
+    ]    
   }  
 }
 
@@ -690,6 +690,13 @@ Content-Type: application/json
 
 { 
   "stub": {
+    "predicates": [
+      {
+        "equals": {
+          "method": "GET"
+        } 
+      }
+    ],
     "responses": [
       {
         "is": {
@@ -699,14 +706,7 @@ Content-Type: application/json
           }
         }
       }
-    ],
-    "predicates": [
-      {
-        "equals": {
-          "method": "GET"
-        } 
-      }
-    ]
+    ]    
   }  
 }
 
