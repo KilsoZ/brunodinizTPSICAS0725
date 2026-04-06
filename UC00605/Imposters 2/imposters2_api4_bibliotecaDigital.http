@@ -1,0 +1,391 @@
+### Por questão de consistencia, aqui um Delete para apagar imposters e fazer os exercicios seguidos
+DELETE http://localhost:2525/imposters
+
+### 2. API Gestão de Inventário de Produtos
+
+### Criaçao do Imposter
+POST http://localhost:2525/imposters
+Content-Type: application/json
+
+{
+  "port": 3000,
+  "protocol": "http",
+  "name": "imposter-produtos"
+}
+
+### Stub 200 GET /api/livros
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 200,
+          "headers": { "Content-Type": "application/json" },
+          "body": {
+            "livros": [
+              { "id": 1, "titulo": "O Nome da Rosa", "autor": "Umberto Eco", "disponivel": true },
+              { "id": 2, "titulo": "O Senhor dos Anéis", "autor": "J.R.R. Tolkien", "disponivel": false },
+              { "id": 3, "titulo": "Duna", "autor": "Frank Herbert", "disponivel": true }
+            ]
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "GET",
+          "path": "/api/livros"
+        }
+      }
+    ]
+  }
+}
+
+### Teste GET /api/livros (200)
+GET http://localhost:3000/api/livros
+
+### Stub 200 GET /api/livros/{id}
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 200,
+          "headers": { "Content-Type": "application/json" },
+          "body": {
+            "livro": { "id": 1, "titulo": "O Nome da Rosa", "autor": "Umberto Eco", "disponivel": true }
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "GET",
+          "path": "/api/livros/1"
+        }
+      }
+    ]
+  }
+}
+
+### Stub 404 GET /api/livros/{id}
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 404,
+          "headers": { "Content-Type": "application/json" },
+          "body": {
+            "error": "not_found",
+            "message": "Livro não encontrado"
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "GET",
+          "path": "/api/livros/99"
+        }
+      }
+    ]
+  }
+}
+
+### Teste GET /api/livros/1 (200)
+GET http://localhost:3000/api/livros/1
+
+### Teste GET /api/livros/99 (404)
+GET http://localhost:3000/api/livros/99
+
+### Stub 409 POST /api/emprestimos - livro já emprestado
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 409,
+          "headers": { "Content-Type": "application/json" },
+          "body": {
+            "error": "book_unavailable",
+            "message": "O livro já se encontra emprestado"
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "POST",
+          "path": "/api/emprestimos",
+          "body": {
+            "cliente": "Bruno Teste",
+            "livro_id": 2,
+            "data_emprestimo": "2025-06-01"
+          }
+        }
+      }
+    ]
+  }
+}
+
+### Stub 400 POST /api/emprestimos - campos em falta
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 400,
+          "headers": { "Content-Type": "application/json" },
+          "body": {
+            "error": "missing_fields",
+            "message": "Os campos cliente, livro_id e data_emprestimo são obrigatórios"
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": { "method": "POST", "path": "/api/emprestimos" }
+      },
+      {
+        "not": {
+          "contains": { "body": "livro_id" }
+        }
+      }
+    ]
+  }
+}
+
+### Stub 201 POST /api/emprestimos - criado com sucesso
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 201,
+          "headers": {
+            "Content-Type": "application/json",
+            "Location": "/api/emprestimos/1"
+          },
+          "body": {
+            "id": 1,
+            "status": "created",
+            "message": "Empréstimo registado com sucesso"
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "POST",
+          "path": "/api/emprestimos",
+          "headers": { "Content-Type": "application/json" }
+        }
+      }
+    ]
+  }
+}
+
+### Teste POST /api/emprestimos - livro já emprestado (409)
+POST http://localhost:3000/api/emprestimos
+Content-Type: application/json
+
+{ "cliente": "Bruno Teste", "livro_id": 2, "data_emprestimo": "2025-06-01" }
+
+### Teste POST /api/emprestimos - campos em falta (400)
+POST http://localhost:3000/api/emprestimos
+Content-Type: application/json
+
+{ "cliente": "Bruno Teste", "data_emprestimo": "2025-06-01" }
+
+### Teste POST /api/emprestimos - criado com sucesso (201)
+POST http://localhost:3000/api/emprestimos
+Content-Type: application/json
+
+{ "cliente": "Ana Silva", "livro_id": 1, "data_emprestimo": "2025-06-01" }
+
+
+### Stub 404 PUT /api/emprestimos/{id}/devolucao - sem empréstimo ativo
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 404,
+          "headers": { "Content-Type": "application/json" },
+          "body": {
+            "error": "not_found",
+            "message": "Nenhum empréstimo ativo encontrado para este livro"
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "PUT",
+          "path": "/api/emprestimos/99/devolucao"
+        }
+      }
+    ]
+  }
+}
+
+### Stub 200 PUT /api/emprestimos/{id}/devolucao - devolvido com sucesso
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 200,
+          "headers": { "Content-Type": "application/json" },
+          "body": {
+            "id": 1,
+            "status": "returned",
+            "message": "Livro devolvido com sucesso"
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "PUT",
+          "path": "/api/emprestimos/1/devolucao"
+        }
+      }
+    ]
+  }
+}
+
+### Teste PUT /api/emprestimos/99/devolucao - sem empréstimo (404)
+PUT http://localhost:3000/api/emprestimos/99/devolucao
+
+### Teste PUT /api/emprestimos/1/devolucao - devolvido com sucesso (200)
+PUT http://localhost:3000/api/emprestimos/1/devolucao
+
+### Stub 409 DELETE /api/livros/{id} - livro emprestado
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 409,
+          "headers": { "Content-Type": "application/json" },
+          "body": {
+            "error": "book_unavailable",
+            "message": "Não é possível remover um livro que está emprestado"
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "DELETE",
+          "path": "/api/livros/2"
+        }
+      }
+    ]
+  }
+}
+
+### Stub 404 DELETE /api/livros/{id} - livro não existe
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 404,
+          "headers": { "Content-Type": "application/json" },
+          "body": {
+            "error": "not_found",
+            "message": "Livro não encontrado"
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "DELETE",
+          "path": "/api/livros/99"
+        }
+      }
+    ]
+  }
+}
+
+### Stub 200 DELETE /api/livros/{id} - removido com sucesso
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 200,
+          "headers": { "Content-Type": "application/json" },
+          "body": {
+            "status": "deleted",
+            "message": "Livro removido do catálogo com sucesso"
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "DELETE",
+          "path": "/api/livros/1"
+        }
+      }
+    ]
+  }
+}
+
+### Teste DELETE /api/livros/2 - livro emprestado (409)
+DELETE http://localhost:3000/api/livros/2
+
+### Teste DELETE /api/livros/99 - não existe (404)
+DELETE http://localhost:3000/api/livros/99
+
+### Teste DELETE /api/livros/1 - removido com sucesso (200)
+DELETE http://localhost:3000/api/livros/1
