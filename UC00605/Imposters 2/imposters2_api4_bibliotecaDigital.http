@@ -1,7 +1,7 @@
 ### Por questão de consistencia, aqui um Delete para apagar imposters e fazer os exercicios seguidos
 DELETE http://localhost:2525/imposters
 
-### 2. API Biblioteca Digital
+### 2. API 4 Biblioteca Digital
 
 ### Criaçao do Imposter
 POST http://localhost:2525/imposters
@@ -19,6 +19,14 @@ Content-Type: application/json
 
 {
   "stub": {
+    "predicates": [
+      {
+        "equals": {
+          "method": "GET",
+          "path": "/api/livros"
+        }
+      }
+    ],
     "responses": [
       {
         "is": {
@@ -33,15 +41,7 @@ Content-Type: application/json
           }
         }
       }
-    ],
-    "predicates": [
-      {
-        "equals": {
-          "method": "GET",
-          "path": "/api/livros"
-        }
-      }
-    ]
+    ]    
   }
 }
 
@@ -54,6 +54,14 @@ Content-Type: application/json
 
 {
   "stub": {
+    "predicates": [
+      {
+        "equals": {
+          "method": "GET",
+          "path": "/api/livros/1"
+        }
+      }
+    ],
     "responses": [
       {
         "is": {
@@ -64,15 +72,7 @@ Content-Type: application/json
           }
         }
       }
-    ],
-    "predicates": [
-      {
-        "equals": {
-          "method": "GET",
-          "path": "/api/livros/1"
-        }
-      }
-    ]
+    ]    
   }
 }
 
@@ -82,6 +82,14 @@ Content-Type: application/json
 
 {
   "stub": {
+    "predicates": [
+      {
+        "equals": {
+          "method": "GET",
+          "path": "/api/livros/99"
+        }
+      }
+    ],
     "responses": [
       {
         "is": {
@@ -93,15 +101,7 @@ Content-Type: application/json
           }
         }
       }
-    ],
-    "predicates": [
-      {
-        "equals": {
-          "method": "GET",
-          "path": "/api/livros/99"
-        }
-      }
-    ]
+    ]    
   }
 }
 
@@ -117,18 +117,6 @@ Content-Type: application/json
 
 {
   "stub": {
-    "responses": [
-      {
-        "is": {
-          "statusCode": 409,
-          "headers": { "Content-Type": "application/json" },
-          "body": {
-            "error": "book_unavailable",
-            "message": "O livro já se encontra emprestado"
-          }
-        }
-      }
-    ],
     "predicates": [
       {
         "equals": {
@@ -141,7 +129,19 @@ Content-Type: application/json
           }
         }
       }
-    ]
+    ],
+    "responses": [
+      {
+        "is": {
+          "statusCode": 409,
+          "headers": { "Content-Type": "application/json" },
+          "body": {
+            "error": "book_unavailable",
+            "message": "O livro já se encontra emprestado"
+          }
+        }
+      }
+    ]    
   }
 }
 
@@ -151,6 +151,16 @@ Content-Type: application/json
 
 {
   "stub": {
+    "predicates": [
+      {
+        "equals": { "method": "POST", "path": "/api/emprestimos" }
+      },
+      {
+        "not": {
+          "contains": { "body": "livro_id" }
+        }
+      }
+    ],
     "responses": [
       {
         "is": {
@@ -162,17 +172,7 @@ Content-Type: application/json
           }
         }
       }
-    ],
-    "predicates": [
-      {
-        "equals": { "method": "POST", "path": "/api/emprestimos" }
-      },
-      {
-        "not": {
-          "contains": { "body": "livro_id" }
-        }
-      }
-    ]
+    ]    
   }
 }
 
@@ -182,6 +182,15 @@ Content-Type: application/json
 
 {
   "stub": {
+    "predicates": [
+      {
+        "equals": {
+          "method": "POST",
+          "path": "/api/emprestimos",
+          "headers": { "Content-Type": "application/json" }
+        }
+      }
+    ],
     "responses": [
       {
         "is": {
@@ -197,16 +206,7 @@ Content-Type: application/json
           }
         }
       }
-    ],
-    "predicates": [
-      {
-        "equals": {
-          "method": "POST",
-          "path": "/api/emprestimos",
-          "headers": { "Content-Type": "application/json" }
-        }
-      }
-    ]
+    ]    
   }
 }
 
@@ -235,6 +235,14 @@ Content-Type: application/json
 
 {
   "stub": {
+    "predicates": [
+      {
+        "equals": {
+          "method": "PUT",
+          "path": "/api/emprestimos/99/devolucao"
+        }
+      }
+    ],
     "responses": [
       {
         "is": {
@@ -246,15 +254,7 @@ Content-Type: application/json
           }
         }
       }
-    ],
-    "predicates": [
-      {
-        "equals": {
-          "method": "PUT",
-          "path": "/api/emprestimos/99/devolucao"
-        }
-      }
-    ]
+    ]    
   }
 }
 
@@ -264,6 +264,14 @@ Content-Type: application/json
 
 {
   "stub": {
+    "predicates": [
+      {
+        "equals": {
+          "method": "PUT",
+          "path": "/api/emprestimos/1/devolucao"
+        }
+      }
+    ],
     "responses": [
       {
         "is": {
@@ -276,15 +284,7 @@ Content-Type: application/json
           }
         }
       }
-    ],
-    "predicates": [
-      {
-        "equals": {
-          "method": "PUT",
-          "path": "/api/emprestimos/1/devolucao"
-        }
-      }
-    ]
+    ]    
   }
 }
 
@@ -300,6 +300,14 @@ Content-Type: application/json
 
 {
   "stub": {
+    "predicates": [
+      {
+        "equals": {
+          "method": "DELETE",
+          "path": "/api/livros/2"
+        }
+      }
+    ],
     "responses": [
       {
         "is": {
@@ -311,15 +319,7 @@ Content-Type: application/json
           }
         }
       }
-    ],
-    "predicates": [
-      {
-        "equals": {
-          "method": "DELETE",
-          "path": "/api/livros/2"
-        }
-      }
-    ]
+    ]    
   }
 }
 
@@ -329,6 +329,14 @@ Content-Type: application/json
 
 {
   "stub": {
+    "predicates": [
+      {
+        "equals": {
+          "method": "DELETE",
+          "path": "/api/livros/99"
+        }
+      }
+    ],
     "responses": [
       {
         "is": {
@@ -340,15 +348,7 @@ Content-Type: application/json
           }
         }
       }
-    ],
-    "predicates": [
-      {
-        "equals": {
-          "method": "DELETE",
-          "path": "/api/livros/99"
-        }
-      }
-    ]
+    ]    
   }
 }
 
@@ -358,6 +358,14 @@ Content-Type: application/json
 
 {
   "stub": {
+    "predicates": [
+      {
+        "equals": {
+          "method": "DELETE",
+          "path": "/api/livros/1"
+        }
+      }
+    ],
     "responses": [
       {
         "is": {
@@ -369,15 +377,7 @@ Content-Type: application/json
           }
         }
       }
-    ],
-    "predicates": [
-      {
-        "equals": {
-          "method": "DELETE",
-          "path": "/api/livros/1"
-        }
-      }
-    ]
+    ]    
   }
 }
 

@@ -1,7 +1,7 @@
 ### Por questão de consistencia, aqui um Delete para apagar imposters e fazer os exercicios seguidos
 DELETE http://localhost:2525/imposters
 
-### 2. API Gestão de Reservas de Hotel
+### 2. API 3 Gestão de Reservas de Hotel
 
 ### Criaçao do Imposter
 POST http://localhost:2525/imposters
@@ -19,6 +19,14 @@ Content-Type: application/json
 
 {
   "stub": {
+    "predicates": [
+      {
+        "equals": {
+          "method": "GET",
+          "path": "/api/reservas"
+        }
+      }
+    ],
     "responses": [
       {
         "is": {
@@ -35,15 +43,7 @@ Content-Type: application/json
           }
         }
       }
-    ],
-    "predicates": [
-      {
-        "equals": {
-          "method": "GET",
-          "path": "/api/reservas"
-        }
-      }
-    ]
+    ]    
   }
 }
 
@@ -56,6 +56,16 @@ Content-Type: application/json
 
 {
   "stub": {
+    "predicates": [
+        {
+        "equals": { "method": "POST", "path": "/api/reservas" }
+      },
+      {
+        "not": {
+          "contains": { "body": "tipo_quarto" }
+        }
+      }
+    ],
     "responses": [
       {
         "is": {
@@ -69,17 +79,7 @@ Content-Type: application/json
           }
         }
       }
-    ],
-    "predicates": [
-        {
-        "equals": { "method": "POST", "path": "/api/reservas" }
-      },
-      {
-        "not": {
-          "contains": { "body": "tipo_quarto" }
-        }
-      }
-    ]
+    ]    
   }
 }
 
@@ -89,20 +89,6 @@ Content-Type: application/json
 
 {
   "stub": {
-    "responses": [
-      {
-        "is": {
-          "statusCode": 400,
-          "headers": {
-            "Content-Type": "application/json"
-          },
-          "body": {
-            "error": "invalid_dates",
-            "message": "Data checkout nao pode ser anterior ao checkin"
-          }
-        }
-      }
-    ],
     "predicates": [
         {
         "equals": { 
@@ -116,7 +102,21 @@ Content-Type: application/json
             }
         }
       }
-    ]
+    ],
+    "responses": [
+      {
+        "is": {
+          "statusCode": 400,
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": {
+            "error": "invalid_dates",
+            "message": "Data checkout nao pode ser anterior ao checkin"
+          }
+        }
+      }
+    ]    
   }
 }
 
@@ -126,20 +126,6 @@ Content-Type: application/json
 
 {
   "stub": {
-    "responses": [
-      {
-        "is": {
-          "statusCode": 409,
-          "headers": {
-            "Content-Type": "application/json"
-          },
-          "body": {
-            "error": "room_unavailable",
-            "message": "O quarto em especifico nao está disponivel nesta data"
-          }
-        }
-      }
-    ],
     "predicates": [
         {
         "equals": { 
@@ -153,7 +139,21 @@ Content-Type: application/json
             }
         }
       }
-    ]
+    ],
+    "responses": [
+      {
+        "is": {
+          "statusCode": 409,
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": {
+            "error": "room_unavailable",
+            "message": "O quarto em especifico nao está disponivel nesta data"
+          }
+        }
+      }
+    ]    
   }
 }
 
@@ -163,6 +163,15 @@ Content-Type: application/json
 
 {
   "stub": {
+    "predicates": [
+      {
+        "equals": {
+          "method": "POST",
+          "path": "/api/reservas",
+          "headers": { "Content-Type": "application/json" }
+        }
+      }
+    ],
     "responses": [
       {
         "is": {
@@ -178,16 +187,7 @@ Content-Type: application/json
           }
         }
       }
-    ],
-    "predicates": [
-      {
-        "equals": {
-          "method": "POST",
-          "path": "/api/reservas",
-          "headers": { "Content-Type": "application/json" }
-        }
-      }
-    ]
+    ]  
   }
 }
 
@@ -221,18 +221,6 @@ Content-Type: application/json
 
 {
   "stub": {
-    "responses": [
-      {
-        "is": {
-          "statusCode": 400,
-          "headers": { "Content-Type": "application/json" },
-          "body": {
-            "error": "modification_not_allowed",
-            "message": "Não é possível alterar a reserva com menos de 24h antes do checkin"
-          }
-        }
-      }
-    ],
     "predicates": [
       {
         "equals": {
@@ -244,7 +232,19 @@ Content-Type: application/json
           }
         }
       }
-    ]
+    ],
+    "responses": [
+      {
+        "is": {
+          "statusCode": 400,
+          "headers": { "Content-Type": "application/json" },
+          "body": {
+            "error": "modification_not_allowed",
+            "message": "Não é possível alterar a reserva com menos de 24h antes do checkin"
+          }
+        }
+      }
+    ]    
   }
 }
 
@@ -254,6 +254,14 @@ Content-Type: application/json
 
 {
   "stub": {
+    "predicates": [
+      {
+        "equals": {
+          "method": "PUT",
+          "path": "/api/reservas/99"
+        }
+      }
+    ],
     "responses": [
       {
         "is": {
@@ -265,15 +273,7 @@ Content-Type: application/json
           }
         }
       }
-    ],
-    "predicates": [
-      {
-        "equals": {
-          "method": "PUT",
-          "path": "/api/reservas/99"
-        }
-      }
-    ]
+    ]    
   }
 }
 
@@ -283,6 +283,14 @@ Content-Type: application/json
 
 {
   "stub": {
+    "predicates": [
+      {
+        "equals": {
+          "method": "PUT",
+          "path": "/api/reservas/1"
+        }
+      }
+    ],
     "responses": [
       {
         "is": {
@@ -295,15 +303,7 @@ Content-Type: application/json
           }
         }
       }
-    ],
-    "predicates": [
-      {
-        "equals": {
-          "method": "PUT",
-          "path": "/api/reservas/1"
-        }
-      }
-    ]
+    ]    
   }
 }
 
@@ -332,6 +332,17 @@ Content-Type: application/json
 
 {
   "stub": {
+    "predicates": [
+      {
+        "equals": {
+          "method": "DELETE",
+          "path": "/api/reservas/3",
+          "body": {
+            "checkin": "2024-01-01"
+          }
+        }
+      }
+    ],
     "responses": [
       {
         "is": {
@@ -343,18 +354,7 @@ Content-Type: application/json
           }
         }
       }
-    ],
-    "predicates": [
-      {
-        "equals": {
-          "method": "DELETE",
-          "path": "/api/reservas/3",
-          "body": {
-            "checkin": "2024-01-01"
-          }
-        }
-      }
-    ]
+    ]    
   }
 }
 
@@ -364,6 +364,14 @@ Content-Type: application/json
 
 {
   "stub": {
+    "predicates": [
+      {
+        "equals": {
+          "method": "DELETE",
+          "path": "/api/reservas/99"
+        }
+      }
+    ],
     "responses": [
       {
         "is": {
@@ -375,15 +383,7 @@ Content-Type: application/json
           }
         }
       }
-    ],
-    "predicates": [
-      {
-        "equals": {
-          "method": "DELETE",
-          "path": "/api/reservas/99"
-        }
-      }
-    ]
+    ]    
   }
 }
 
@@ -393,6 +393,14 @@ Content-Type: application/json
 
 {
   "stub": {
+    "predicates": [
+      {
+        "equals": {
+          "method": "DELETE",
+          "path": "/api/reservas/1"
+        }
+      }
+    ],
     "responses": [
       {
         "is": {
@@ -404,15 +412,7 @@ Content-Type: application/json
           }
         }
       }
-    ],
-    "predicates": [
-      {
-        "equals": {
-          "method": "DELETE",
-          "path": "/api/reservas/1"
-        }
-      }
-    ]
+    ]    
   }
 }
 

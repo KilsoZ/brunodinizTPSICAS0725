@@ -2,7 +2,7 @@
 DELETE http://localhost:2525/imposters
 
 
-### 1. API Gestão de Alunos
+### 1. API 1 Gestão de Alunos
 
 ### Criaçao do Imposter
 POST http://localhost:2525/imposters
@@ -20,6 +20,14 @@ Content-Type: application/json
 
 {
   "stub": {
+    "predicates": [
+      {
+        "equals": {
+          "method": "GET",
+          "path": "/api/alunos"
+        }
+      }
+    ],
     "responses": [
       {
         "is": {
@@ -36,15 +44,7 @@ Content-Type: application/json
           }
         }
       }
-    ],
-    "predicates": [
-      {
-        "equals": {
-          "method": "GET",
-          "path": "/api/alunos"
-        }
-      }
-    ]
+    ]    
   }
 }
 
@@ -57,6 +57,14 @@ Content-Type: application/json
 
 {
   "stub": {
+    "predicates": [
+      {
+        "equals": {
+          "method": "GET",
+          "path": "/api/alunos/1"
+        }
+      }
+    ],
     "responses": [
       {
         "is": {
@@ -69,15 +77,7 @@ Content-Type: application/json
           }
         }
       }
-    ],
-    "predicates": [
-      {
-        "equals": {
-          "method": "GET",
-          "path": "/api/alunos/1"
-        }
-      }
-    ]
+    ]    
   }
 }
 
@@ -90,6 +90,14 @@ Content-Type: application/json
 
 {
   "stub": {
+    "predicates": [
+      {
+        "equals": {
+          "method": "GET",
+          "path": "/api/alunos/99"
+        }
+      }
+    ],
     "responses": [
       {
         "is": {
@@ -99,15 +107,7 @@ Content-Type: application/json
           }
         }
       }
-    ],
-    "predicates": [
-      {
-        "equals": {
-          "method": "GET",
-          "path": "/api/alunos/99"
-        }
-      }
-    ]
+    ]    
   }
 }
 
@@ -121,6 +121,13 @@ Content-Type: application/json
 
 {
   "stub": {
+    "predicates": [
+        {
+            "matches": {
+            "body": "\"idade\":\\s*[0-9]\\b"
+            }
+        }
+    ],
     "responses": [
       {
         "is": {
@@ -134,14 +141,7 @@ Content-Type: application/json
           }
         }
       }
-    ],
-    "predicates": [
-        {
-            "matches": {
-            "body": "\"idade\":\\s*[0-9]\\b"
-            }
-        }
-    ]
+    ]    
   }
 }
 
@@ -151,6 +151,13 @@ Content-Type: application/json
 
 { 
   "stub": {
+    "predicates": [
+      {
+        "contains": {
+            "body": "\"curso\":\"Cristianismo\""
+        }
+      }
+    ],
     "responses": [
       {
         "is": {
@@ -161,14 +168,7 @@ Content-Type: application/json
           }
         }
       }
-    ],
-    "predicates": [
-      {
-        "contains": {
-            "body": "\"curso\":\"Cristianismo\""
-        }
-      }
-    ]
+    ]    
   }  
 }
 
@@ -179,6 +179,17 @@ Content-Type: application/json
 
 {
   "stub": {
+    "predicates": [
+      {
+        "equals": {
+          "method": "POST",
+          "path": "/api/alunos",
+          "headers": {
+            "Content-Type": "application/json"
+          }
+        } 
+      }
+    ],
     "responses": [
       {
         "is": {
@@ -194,18 +205,7 @@ Content-Type: application/json
           }
         }
       }
-    ],
-    "predicates": [
-      {
-        "equals": {
-          "method": "POST",
-          "path": "/api/alunos",
-          "headers": {
-            "Content-Type": "application/json"
-          }
-        } 
-      }
-    ]
+    ]    
   }
 }
 
@@ -233,6 +233,14 @@ Content-Type: application/json
 
 {
   "stub": {
+    "predicates": [
+      {
+        "equals": {
+          "method": "PUT",
+          "path": "/api/alunos/1"
+        }
+      }
+    ],
     "responses": [
       {
         "is": {
@@ -245,15 +253,7 @@ Content-Type: application/json
           }
         }
       }
-    ],
-    "predicates": [
-      {
-        "equals": {
-          "method": "PUT",
-          "path": "/api/alunos/1"
-        }
-      }
-    ]
+    ]    
   }
 }
 
@@ -263,6 +263,14 @@ Content-Type: application/json
 
 {
   "stub": {
+    "predicates": [
+      {
+        "equals": {
+          "method": "PUT",
+          "path": "/api/alunos/99"
+        }
+      }
+    ],
     "responses": [
       {
         "is": {
@@ -272,15 +280,7 @@ Content-Type: application/json
           }
         }
       }
-    ],
-    "predicates": [
-      {
-        "equals": {
-          "method": "PUT",
-          "path": "/api/alunos/99"
-        }
-      }
-    ]
+    ]    
   }
 }
 
@@ -303,16 +303,6 @@ Content-Type: application/json
 
 {
   "stub": {
-    "responses": [
-      {
-        "is": {
-          "statusCode": 200,
-          "headers": {
-            "Content-Type": "application/json"
-          }
-        }
-      }
-    ],
     "predicates": [
       {
         "equals": {
@@ -323,7 +313,17 @@ Content-Type: application/json
           }
         }        
       }
-    ]
+    ],
+    "responses": [
+      {
+        "is": {
+          "statusCode": 200,
+          "headers": {
+            "Content-Type": "application/json"
+          }
+        }
+      }
+    ]    
   }
 }
 
@@ -333,6 +333,14 @@ Content-Type: application/json
 
 {
   "stub": {
+    "predicates": [
+      {
+        "equals": {
+          "method": "DELETE",
+          "path": "/api/alunos/1"
+        }        
+      }
+    ],
     "responses": [
       {
         "is": {
@@ -342,15 +350,7 @@ Content-Type: application/json
           }
         }
       }
-    ],
-    "predicates": [
-      {
-        "equals": {
-          "method": "DELETE",
-          "path": "/api/alunos/1"
-        }        
-      }
-    ]
+    ]    
   }
 }
 
