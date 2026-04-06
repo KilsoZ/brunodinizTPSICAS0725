@@ -1,0 +1,429 @@
+### Por questão de consistencia, aqui um Delete para apagar imposters e fazer os exercicios seguidos
+DELETE http://localhost:2525/imposters
+
+### 2. API Gestão de Inventário de Produtos
+
+### Criaçao do Imposter
+POST http://localhost:2525/imposters
+Content-Type: application/json
+
+{
+  "port": 3000,
+  "protocol": "http",
+  "name": "imposter-produtos"
+}
+
+### Stub 200 GET /api/reservas
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 200,
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": {
+            "reservas": [
+              { "id": 1, "cliente": "Ana Silva", "checkin": "2025-06-01", "checkout": "2025-06-05", "tipo_quarto": "duplo" },
+              { "id": 2, "cliente": "João Costa", "checkin": "2025-07-10", "checkout": "2025-07-15", "tipo_quarto": "suite" },
+              { "id": 3, "cliente": "Maria Sousa", "checkin": "2025-08-20", "checkout": "2025-08-25", "tipo_quarto": "single" }
+            ]
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "GET",
+          "path": "/api/reservas"
+        }
+      }
+    ]
+  }
+}
+
+### Teste GET /api/reservas (200)
+GET http://localhost:3000/api/reservas
+
+### Stub 400 POST - campos obrigatórios em falta
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 400,
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": {
+            "error": "missing_fields",
+            "message": "Campos cliente, checkin, checkout e tipo_quarto obrigatórios"
+          }
+        }
+      }
+    ],
+    "predicates": [
+        {
+        "equals": { "method": "POST", "path": "/api/reservas" }
+      },
+      {
+        "not": {
+          "contains": { "body": "tipo_quarto" }
+        }
+      }
+    ]
+  }
+}
+
+### Stub 400 POST - checkout anterior ao checkin
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 400,
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": {
+            "error": "invalid_dates",
+            "message": "Data checkout nao pode ser anterior ao checkin"
+          }
+        }
+      }
+    ],
+    "predicates": [
+        {
+        "equals": { 
+            "method": "POST", 
+            "path": "/api/reservas",
+            "body": {
+                "cliente": "Teste Datas",
+                "checkin": "2025-06-10",
+                "checkout": "2025-06-05",
+                "tipo_quarto": "single"
+            }
+        }
+      }
+    ]
+  }
+}
+
+### Stub 409 POST - quarto cheio
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 409,
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": {
+            "error": "room_unavailable",
+            "message": "O quarto em especifico nao está disponivel nesta data"
+          }
+        }
+      }
+    ],
+    "predicates": [
+        {
+        "equals": { 
+            "method": "POST", 
+            "path": "/api/reservas",
+            "body": {
+                "cliente": "Pedro Alves",
+                "checkin": "2025-06-01",
+                "checkout": "2025-06-05",
+                "tipo_quarto": "duplo"
+            }
+        }
+      }
+    ]
+  }
+}
+
+### Stub 201 POST - criada com sucesso
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 201,
+          "headers": {
+            "Content-Type": "application/json",
+            "Location": "/api/reservas/4"
+          },
+          "body": {
+            "id": 4,
+            "status": "created",
+            "message": "Reserva criada com sucesso"
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "POST",
+          "path": "/api/reservas",
+          "headers": { "Content-Type": "application/json" }
+        }
+      }
+    ]
+  }
+}
+
+### Teste POST - campos em falta (400)
+POST http://localhost:3000/api/reservas
+Content-Type: application/json
+
+{ "cliente": "Bruno Teste", "checkin": "2025-09-01" }
+
+### Teste POST - checkout anterior ao checkin (400)
+POST http://localhost:3000/api/reservas
+Content-Type: application/json
+
+{ "cliente": "Teste Datas", "checkin": "2025-06-10", "checkout": "2025-06-05", "tipo_quarto": "single" }
+
+### Teste POST - quarto cheio (409)
+POST http://localhost:3000/api/reservas
+Content-Type: application/json
+
+{ "cliente": "Pedro Alves", "checkin": "2025-06-01", "checkout": "2025-06-05", "tipo_quarto": "duplo" }
+
+### Teste POST - criada com sucesso (201)
+POST http://localhost:3000/api/reservas
+Content-Type: application/json
+
+{ "cliente": "Rui Ferreira", "checkin": "2025-09-10", "checkout": "2025-09-15", "tipo_quarto": "suite" }
+
+### Stub 400 PUT - menos de 24h antes do checkin
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 400,
+          "headers": { "Content-Type": "application/json" },
+          "body": {
+            "error": "modification_not_allowed",
+            "message": "Não é possível alterar a reserva com menos de 24h antes do checkin"
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "PUT",
+          "path": "/api/reservas/2",
+          "body": {
+            "checkin": "2025-05-01",
+            "tipo_quarto": "single"
+          }
+        }
+      }
+    ]
+  }
+}
+
+### Stub 404 PUT - reserva não existe
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 404,
+          "headers": { "Content-Type": "application/json" },
+          "body": {
+            "error": "not_found",
+            "message": "Reserva não encontrada"
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "PUT",
+          "path": "/api/reservas/99"
+        }
+      }
+    ]
+  }
+}
+
+### Stub 200 PUT - alterada com sucesso
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 200,
+          "headers": { "Content-Type": "application/json" },
+          "body": {
+            "id": 1,
+            "status": "updated",
+            "message": "Reserva atualizada com sucesso"
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "PUT",
+          "path": "/api/reservas/1"
+        }
+      }
+    ]
+  }
+}
+
+### Teste PUT - menos de 24h antes do checkin (400)
+PUT http://localhost:3000/api/reservas/2
+Content-Type: application/json
+
+{ "checkin": "2025-05-01", "tipo_quarto": "single" }
+
+### Teste PUT - reserva não existe (404)
+PUT http://localhost:3000/api/reservas/99
+Content-Type: application/json
+
+{ "checkin": "2025-09-10", "tipo_quarto": "duplo" }
+
+### Teste PUT - alterada com sucesso (200)
+PUT http://localhost:3000/api/reservas/1
+Content-Type: application/json
+
+{ "checkin": "2025-06-02", "tipo_quarto": "suite" }
+
+
+### Stub 400 DELETE - após checkin
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 400,
+          "headers": { "Content-Type": "application/json" },
+          "body": {
+            "error": "cancellation_not_allowed",
+            "message": "Não é possível cancelar uma reserva após o checkin"
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "DELETE",
+          "path": "/api/reservas/3",
+          "body": {
+            "checkin": "2024-01-01"
+          }
+        }
+      }
+    ]
+  }
+}
+
+### Stub 404 DELETE - reserva não existe
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 404,
+          "headers": { "Content-Type": "application/json" },
+          "body": {
+            "error": "not_found",
+            "message": "Reserva não encontrada"
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "DELETE",
+          "path": "/api/reservas/99"
+        }
+      }
+    ]
+  }
+}
+
+### Stub 200 DELETE - cancelada com sucesso
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 200,
+          "headers": { "Content-Type": "application/json" },
+          "body": {
+            "status": "cancelled",
+            "message": "Reserva cancelada com sucesso"
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "DELETE",
+          "path": "/api/reservas/1"
+        }
+      }
+    ]
+  }
+}
+
+### Teste DELETE - após checkin (400)
+DELETE http://localhost:3000/api/reservas/3
+Content-Type: application/json
+
+{ "checkin": "2024-01-01" }
+
+### Teste DELETE - reserva não existe (404)
+DELETE http://localhost:3000/api/reservas/99
+
+### Teste DELETE - cancelada com sucesso (200)
+DELETE http://localhost:3000/api/reservas/1
