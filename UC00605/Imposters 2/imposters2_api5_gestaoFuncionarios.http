@@ -1,0 +1,377 @@
+### Por questão de consistencia, aqui um Delete para apagar imposters e fazer os exercicios seguidos
+DELETE http://localhost:2525/imposters
+
+### 2. API Gestão de Inventário de Produtos
+
+### Criaçao do Imposter
+POST http://localhost:2525/imposters
+Content-Type: application/json
+
+{
+  "port": 3000,
+  "protocol": "http",
+  "name": "imposter-produtos"
+}
+
+### Stub 200 GET /api/funcionarios
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 200,
+          "headers": { "Content-Type": "application/json" },
+          "body": {
+            "funcionarios": [
+              { "id": 1, "nome": "Ana Silva", "cargo": "Rececionista", "salario": 900 },
+              { "id": 2, "nome": "João Costa", "cargo": "Gerente", "salario": 1500 },
+              { "id": 3, "nome": "Maria Sousa", "cargo": "Técnica", "salario": 1100 }
+            ]
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "GET",
+          "path": "/api/funcionarios"
+        }
+      }
+    ]
+  }
+}
+
+### Teste GET /api/funcionarios (200)
+GET http://localhost:3000/api/funcionarios
+
+### Stub 400 POST /api/funcionarios - salário abaixo do mínimo
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 400,
+          "headers": { "Content-Type": "application/json" },
+          "body": {
+            "error": "invalid_salary",
+            "message": "O salário não pode ser inferior a 760€"
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "POST",
+          "path": "/api/funcionarios",
+          "body": {
+            "nome": "Rui Ferreira",
+            "cargo": "Assistente",
+            "salario": 500
+          }
+        }
+      }
+    ]
+  }
+}
+
+### Stub 400 POST /api/funcionarios - campos em falta
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 400,
+          "headers": { "Content-Type": "application/json" },
+          "body": {
+            "error": "missing_fields",
+            "message": "Os campos nome, cargo e salario são obrigatórios"
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": { "method": "POST", "path": "/api/funcionarios" }
+      },
+      {
+        "not": {
+          "contains": { "body": "salario" }
+        }
+      }
+    ]
+  }
+}
+
+### Stub 201 POST /api/funcionarios - criado com sucesso
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 201,
+          "headers": {
+            "Content-Type": "application/json",
+            "Location": "/api/funcionarios/4"
+          },
+          "body": {
+            "id": 4,
+            "status": "created",
+            "message": "Funcionário criado com sucesso"
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "POST",
+          "path": "/api/funcionarios",
+          "headers": { "Content-Type": "application/json" }
+        }
+      }
+    ]
+  }
+}
+
+### Teste POST /api/funcionarios - salário abaixo do mínimo (400)
+POST http://localhost:3000/api/funcionarios
+Content-Type: application/json
+
+{ "nome": "Rui Ferreira", "cargo": "Assistente", "salario": 500 }
+
+### Teste POST /api/funcionarios - campos em falta (400)
+POST http://localhost:3000/api/funcionarios
+Content-Type: application/json
+
+{ "nome": "Rui Ferreira", "cargo": "Assistente" }
+
+### Teste POST /api/funcionarios - criado com sucesso (201)
+POST http://localhost:3000/api/funcionarios
+Content-Type: application/json
+
+{ "nome": "Rui Ferreira", "cargo": "Assistente", "salario": 900 }
+
+### Stub 400 PUT /api/funcionarios/{id}/salario - abaixo do mínimo
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 400,
+          "headers": { "Content-Type": "application/json" },
+          "body": {
+            "error": "invalid_salary",
+            "message": "O salário não pode ser inferior a 760€"
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "PUT",
+          "path": "/api/funcionarios/1/salario",
+          "body": {
+            "salario": 500
+          }
+        }
+      }
+    ]
+  }
+}
+
+### Stub 404 PUT /api/funcionarios/{id}/salario - funcionário não existe
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 404,
+          "headers": { "Content-Type": "application/json" },
+          "body": {
+            "error": "not_found",
+            "message": "Funcionário não encontrado"
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "PUT",
+          "path": "/api/funcionarios/99/salario"
+        }
+      }
+    ]
+  }
+}
+
+### Stub 200 PUT /api/funcionarios/{id}/salario - atualizado com sucesso
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 200,
+          "headers": { "Content-Type": "application/json" },
+          "body": {
+            "id": 1,
+            "status": "updated",
+            "message": "Salário atualizado com sucesso"
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "PUT",
+          "path": "/api/funcionarios/1/salario"
+        }
+      }
+    ]
+  }
+}
+
+### Teste PUT /api/funcionarios/1/salario - abaixo do mínimo (400)
+PUT http://localhost:3000/api/funcionarios/1/salario
+Content-Type: application/json
+
+{ "salario": 500 }
+
+### Teste PUT /api/funcionarios/99/salario - não existe (404)
+PUT http://localhost:3000/api/funcionarios/99/salario
+Content-Type: application/json
+
+{ "salario": 1000 }
+
+### Teste PUT /api/funcionarios/1/salario - atualizado com sucesso (200)
+PUT http://localhost:3000/api/funcionarios/1/salario
+Content-Type: application/json
+
+{ "salario": 1200 }
+
+### Stub 400 DELETE /api/funcionarios/{id} - tarefas pendentes
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 400,
+          "headers": { "Content-Type": "application/json" },
+          "body": {
+            "error": "pending_tasks",
+            "message": "Não é possível remover um funcionário com tarefas pendentes"
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "DELETE",
+          "path": "/api/funcionarios/2",
+          "body": {
+            "tarefas_pendentes": true
+          }
+        }
+      }
+    ]
+  }
+}
+
+### Stub 404 DELETE /api/funcionarios/{id} - não existe
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 404,
+          "headers": { "Content-Type": "application/json" },
+          "body": {
+            "error": "not_found",
+            "message": "Funcionário não encontrado"
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "DELETE",
+          "path": "/api/funcionarios/99"
+        }
+      }
+    ]
+  }
+}
+
+### Stub 200 DELETE /api/funcionarios/{id} - removido com sucesso
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "responses": [
+      {
+        "is": {
+          "statusCode": 200,
+          "headers": { "Content-Type": "application/json" },
+          "body": {
+            "status": "deleted",
+            "message": "Funcionário removido com sucesso"
+          }
+        }
+      }
+    ],
+    "predicates": [
+      {
+        "equals": {
+          "method": "DELETE",
+          "path": "/api/funcionarios/1"
+        }
+      }
+    ]
+  }
+}
+
+### Teste DELETE /api/funcionarios/2 - tarefas pendentes (400)
+DELETE http://localhost:3000/api/funcionarios/2
+Content-Type: application/json
+
+{ "tarefas_pendentes": true }
+
+### Teste DELETE /api/funcionarios/99 - não existe (404)
+DELETE http://localhost:3000/api/funcionarios/99
+
+### Teste DELETE /api/funcionarios/1 - removido com sucesso (200)
+DELETE http://localhost:3000/api/funcionarios/1
