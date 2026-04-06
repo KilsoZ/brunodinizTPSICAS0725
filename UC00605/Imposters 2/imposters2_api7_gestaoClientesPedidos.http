@@ -1,0 +1,527 @@
+### Por questão de consistencia, aqui um Delete para apagar imposters e fazer os exercicios seguidos
+DELETE http://localhost:2525/imposters
+
+### 2. API Gestão de Clientes e pEdidos
+
+### Criaçao do Imposter
+POST http://localhost:2525/imposters
+Content-Type: application/json
+
+{
+  "port": 3000,
+  "protocol": "http",
+  "name": "imposter-clientes-pedidos"
+}
+
+### Stub 200 GET /api/clientes
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "predicates": [
+      {
+        "equals": {
+          "method": "GET",
+          "path": "/api/clientes"
+        }
+      }
+    ],
+    "responses": [
+      {
+        "is": {
+          "statusCode": 200,
+          "headers": { "Content-Type": "application/json" },
+          "body": {
+            "clientes": [
+              { "id": 1, "nome": "Ana Silva", "email": "ana@email.com" },
+              { "id": 2, "nome": "João Costa", "email": "joao@email.com" },
+              { "id": 3, "nome": "Maria Sousa", "email": "maria@email.com" }
+            ]
+          }
+        }
+      }
+    ]
+  }
+}
+
+### Stub 400 POST /api/clientes - campos em falta
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "predicates": [
+      {
+        "deepEquals": {
+          "method": "POST",
+          "path": "/api/clientes",
+          "body": {
+            "nome": "Rui Ferreira"
+          }
+        }
+      }
+    ],
+    "responses": [
+      {
+        "is": {
+          "statusCode": 400,
+          "headers": { "Content-Type": "application/json" },
+          "body": {
+            "error": "missing_fields",
+            "message": "Os campos nome e email são obrigatórios"
+          }
+        }
+      }
+    ]
+  }
+}
+
+### Stub 201 POST /api/clientes - criado com sucesso
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "predicates": [
+      {
+        "equals": {
+          "method": "POST",
+          "path": "/api/clientes",
+          "headers": { "Content-Type": "application/json" }
+        }
+      }
+    ],
+    "responses": [
+      {
+        "is": {
+          "statusCode": 201,
+          "headers": {
+            "Content-Type": "application/json",
+            "Location": "/api/clientes/4"
+          },
+          "body": {
+            "id": 4,
+            "status": "created",
+            "message": "Cliente criado com sucesso"
+          }
+        }
+      }
+    ]
+  }
+}
+
+### Teste GET /api/clientes (200)
+GET http://localhost:3000/api/clientes
+
+### Teste POST /api/clientes - campos em falta (400)
+POST http://localhost:3000/api/clientes
+Content-Type: application/json
+
+{ "nome": "Rui Ferreira" }
+
+### Teste POST /api/clientes - criado com sucesso (201)
+POST http://localhost:3000/api/clientes
+Content-Type: application/json
+
+{ "nome": "Rui Ferreira", "email": "rui@email.com" }
+
+### Stub 404 GET /api/clientes/{id}/pedidos - cliente não existe
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "predicates": [
+      {
+        "equals": {
+          "method": "GET",
+          "path": "/api/clientes/99/pedidos"
+        }
+      }
+    ],
+    "responses": [
+      {
+        "is": {
+          "statusCode": 404,
+          "headers": { "Content-Type": "application/json" },
+          "body": {
+            "error": "not_found",
+            "message": "Cliente não encontrado"
+          }
+        }
+      }
+    ]
+  }
+}
+
+### Stub 200 GET /api/clientes/{id}/pedidos
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "predicates": [
+      {
+        "equals": {
+          "method": "GET",
+          "path": "/api/clientes/1/pedidos"
+        }
+      }
+    ],
+    "responses": [
+      {
+        "is": {
+          "statusCode": 200,
+          "headers": { "Content-Type": "application/json" },
+          "body": {
+            "pedidos": [
+              { "id": 1, "produto": "Teclado", "quantidade": 2, "estado": "Enviado" },
+              { "id": 2, "produto": "Rato", "quantidade": 1, "estado": "Entregue" }
+            ]
+          }
+        }
+      }
+    ]
+  }
+}
+
+### Teste GET /api/clientes/99/pedidos - cliente não existe (404)
+GET http://localhost:3000/api/clientes/99/pedidos
+
+### Teste GET /api/clientes/1/pedidos - lista pedidos (200)
+GET http://localhost:3000/api/clientes/1/pedidos
+
+
+### Stub 404 POST /api/pedidos - cliente não existe
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "predicates": [
+      {
+        "deepEquals": {
+          "method": "POST",
+          "path": "/api/pedidos",
+          "body": {
+            "cliente_id": 99,
+            "produto": "Teclado",
+            "quantidade": 2
+          }
+        }
+      }
+    ],
+    "responses": [
+      {
+        "is": {
+          "statusCode": 404,
+          "headers": { "Content-Type": "application/json" },
+          "body": {
+            "error": "not_found",
+            "message": "Cliente não encontrado"
+          }
+        }
+      }
+    ]
+  }
+}
+
+### Stub 400 POST /api/pedidos - quantidade inválida
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "predicates": [
+      {
+        "deepEquals": {
+          "method": "POST",
+          "path": "/api/pedidos",
+          "body": {
+            "cliente_id": 1,
+            "produto": "Teclado",
+            "quantidade": -1
+          }
+        }
+      }
+    ],
+    "responses": [
+      {
+        "is": {
+          "statusCode": 400,
+          "headers": { "Content-Type": "application/json" },
+          "body": {
+            "error": "invalid_quantity",
+            "message": "A quantidade tem de ser superior a zero"
+          }
+        }
+      }
+    ]
+  }
+}
+
+### Stub 201 POST /api/pedidos - criado com sucesso
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "predicates": [
+      {
+        "equals": {
+          "method": "POST",
+          "path": "/api/pedidos",
+          "headers": { "Content-Type": "application/json" }
+        }
+      }
+    ],
+    "responses": [
+      {
+        "is": {
+          "statusCode": 201,
+          "headers": {
+            "Content-Type": "application/json",
+            "Location": "/api/pedidos/3"
+          },
+          "body": {
+            "id": 3,
+            "status": "created",
+            "message": "Pedido criado com sucesso"
+          }
+        }
+      }
+    ]
+  }
+}
+
+### Teste POST /api/pedidos - cliente não existe (404)
+POST http://localhost:3000/api/pedidos
+Content-Type: application/json
+
+{ "cliente_id": 99, "produto": "Teclado", "quantidade": 2 }
+
+### Teste POST /api/pedidos - quantidade inválida (400)
+POST http://localhost:3000/api/pedidos
+Content-Type: application/json
+
+{ "cliente_id": 1, "produto": "Teclado", "quantidade": -1 }
+
+### Teste POST /api/pedidos - criado com sucesso (201)
+POST http://localhost:3000/api/pedidos
+Content-Type: application/json
+
+{ "cliente_id": 1, "produto": "Monitor", "quantidade": 2 }
+
+
+### Stub 400 PUT /api/pedidos/{id} - estado inválido
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "predicates": [
+      {
+        "equals": {
+          "method": "PUT",
+          "path": "/api/pedidos/1",
+          "body": {
+            "estado": "Cancelado"
+          }
+        }
+      }
+    ],
+    "responses": [
+      {
+        "is": {
+          "statusCode": 400,
+          "headers": { "Content-Type": "application/json" },
+          "body": {
+            "error": "invalid_state",
+            "message": "Estado inválido. Use: Em processamento, Enviado ou Entregue"
+          }
+        }
+      }
+    ]
+  }
+}
+
+### Stub 404 PUT /api/pedidos/{id} - pedido não existe
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "predicates": [
+      {
+        "equals": {
+          "method": "PUT",
+          "path": "/api/pedidos/99"
+        }
+      }
+    ],
+    "responses": [
+      {
+        "is": {
+          "statusCode": 404,
+          "headers": { "Content-Type": "application/json" },
+          "body": {
+            "error": "not_found",
+            "message": "Pedido não encontrado"
+          }
+        }
+      }
+    ]
+  }
+}
+
+### Stub 200 PUT /api/pedidos/{id} - estado atualizado
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "predicates": [
+      {
+        "equals": {
+          "method": "PUT",
+          "path": "/api/pedidos/1"
+        }
+      }
+    ],
+    "responses": [
+      {
+        "is": {
+          "statusCode": 200,
+          "headers": { "Content-Type": "application/json" },
+          "body": {
+            "id": 1,
+            "status": "updated",
+            "message": "Estado do pedido atualizado com sucesso"
+          }
+        }
+      }
+    ]
+  }
+}
+
+### Teste PUT /api/pedidos/1 - estado inválido (400)
+PUT http://localhost:3000/api/pedidos/1
+Content-Type: application/json
+
+{ "estado": "Cancelado" }
+
+### Teste PUT /api/pedidos/99 - não existe (404)
+PUT http://localhost:3000/api/pedidos/99
+Content-Type: application/json
+
+{ "estado": "Enviado" }
+
+### Teste PUT /api/pedidos/1 - estado atualizado (200)
+PUT http://localhost:3000/api/pedidos/1
+Content-Type: application/json
+
+{ "estado": "Enviado" }
+
+
+### Stub 400 DELETE /api/pedidos/{id} - pedido não está em processamento
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "predicates": [
+      {
+        "deepEquals": {
+          "method": "DELETE",
+          "path": "/api/pedidos/1",
+          "body": {
+            "estado": "Enviado"
+          }
+        }
+      }
+    ],
+    "responses": [
+      {
+        "is": {
+          "statusCode": 400,
+          "headers": { "Content-Type": "application/json" },
+          "body": {
+            "error": "cancellation_not_allowed",
+            "message": "Apenas é possível cancelar pedidos em processamento"
+          }
+        }
+      }
+    ]
+  }
+}
+
+### Stub 404 DELETE /api/pedidos/{id} - não existe
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "predicates": [
+      {
+        "equals": {
+          "method": "DELETE",
+          "path": "/api/pedidos/99"
+        }
+      }
+    ],
+    "responses": [
+      {
+        "is": {
+          "statusCode": 404,
+          "headers": { "Content-Type": "application/json" },
+          "body": {
+            "error": "not_found",
+            "message": "Pedido não encontrado"
+          }
+        }
+      }
+    ]
+  }
+}
+
+### Stub 200 DELETE /api/pedidos/{id} - cancelado com sucesso
+POST http://localhost:2525/imposters/3000/stubs
+Content-Type: application/json
+
+{
+  "stub": {
+    "predicates": [
+      {
+        "equals": {
+          "method": "DELETE",
+          "path": "/api/pedidos/2"
+        }
+      }
+    ],
+    "responses": [
+      {
+        "is": {
+          "statusCode": 200,
+          "headers": { "Content-Type": "application/json" },
+          "body": {
+            "status": "cancelled",
+            "message": "Pedido cancelado com sucesso"
+          }
+        }
+      }
+    ]
+  }
+}
+
+### Teste DELETE /api/pedidos/1 - não está em processamento (400)
+DELETE http://localhost:3000/api/pedidos/1
+Content-Type: application/json
+
+{ "estado": "Enviado" }
+
+### Teste DELETE /api/pedidos/99 - não existe (404)
+DELETE http://localhost:3000/api/pedidos/99
+
+### Teste DELETE /api/pedidos/2 - cancelado com sucesso (200)
+DELETE http://localhost:3000/api/pedidos/2
