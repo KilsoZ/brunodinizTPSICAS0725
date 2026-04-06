@@ -1,7 +1,7 @@
 ### Por questão de consistencia, aqui um Delete para apagar imposters e fazer os exercicios seguidos
 DELETE http://localhost:2525/imposters
 
-### 2. API Gestão de Inventário de Produtos
+### 2. API Gestão de Reservas de Hotel
 
 ### Criaçao do Imposter
 POST http://localhost:2525/imposters
@@ -10,7 +10,7 @@ Content-Type: application/json
 {
   "port": 3000,
   "protocol": "http",
-  "name": "imposter-produtos"
+  "name": "imposter-reservas"
 }
 
 ### Stub 200 GET /api/reservas
